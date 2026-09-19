@@ -1,0 +1,16 @@
+{
+  "schema_version": "1",
+  "domain": "林产品公共品牌授权验真",
+  "required_fields": [
+    "producer_ref",
+    "product_ref",
+    "batch_ref",
+    "inspection_digest",
+    "valid_until"
+  ],
+  "time_format": "ISO 8601 with offset",
+  "sample": {
+    "producer_ref": "MAKER-DEMO",
+    "batch_ref": "WOOD-DEMO"
+  }
+}
