@@ -1,14 +1,33 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
   "domain": "林产品公共品牌授权验真",
-  "required_fields": [
-    "producer_ref",
-    "product_ref",
-    "batch_ref",
-    "inspection_digest",
-    "valid_until"
+  "time_format": "ISO 8601 with offset (RFC 3339)，服务端统一按 UTC 存储",
+  "principles": [
+    "授权凭证 attestations 是只追加的外部依据：可导入，不可修改、不可删除（数据库触发器强制）",
+    "每个标签编号按 印制批次→箱件→交付→企业领用→产品贴附→挂失/停用/作废 记录唯一去向链",
+    "贴附以设备事件 client_event_id 幂等：离线重传不产生第二条贴附，一个编号不能贴到两个不同产品批次",
+    "授权到期不追溯既往：贴附发生在有效期内的已售板材仍验真通过；只有未领用的剩余标签被停用",
+    "未贴附到产品的编号对外验证时不显示企业名称，避免遗失/挪用标签借扫码页自证",
+    "挂失时冻结最后保管方，品牌方可按印制批次汇总整批遗失标签最后由谁保管"
   ],
-  "time_format": "ISO 8601 with offset",
+  "entities": {
+    "attestation": {
+      "required_fields": ["producer_ref", "product_ref", "batch_ref", "spec", "inspection_digest", "valid_until"],
+      "optional_fields": ["source_ref", "valid_from"],
+      "immutable": true,
+      "note": "source_ref 为外部授权系统记录号；(producer_ref, source_ref) 唯一，重复导入冲突而非覆盖"
+    },
+    "print_batch": ["id", "printer_ref", "printed_at", "codes[]"],
+    "carton": ["id", "print_batch_id", "codes[]", "delivery_id"],
+    "delivery": ["id", "producer_ref", "receiver_ref", "carton_ids[]", "delivered_at"],
+    "issue": ["id", "producer_ref", "attestation_id", "codes[]", "issued_at"],
+    "product_batch": ["id", "producer_ref", "attestation_id", "product_ref", "spec", "produced_at"],
+    "attachment": ["code", "product_batch_id", "client_event_id", "device_ref", "occurred_at"],
+    "lost_report": ["id", "code", "reported_by", "custodian_type", "custodian_ref", "status", "reported_at"],
+    "void": ["id", "code", "reason", "custodian_type", "custodian_ref", "voided_at"],
+    "custody_event": ["code", "event_type", "custodian_type", "custodian_ref", "ref_type", "ref_id", "at"]
+  },
+  "code_status": ["printed", "packed", "delivered", "issued", "attached", "lost", "blocked", "void"],
   "sample": {
     "producer_ref": "MAKER-DEMO",
     "batch_ref": "WOOD-DEMO"

@@ -1,4 +1,10 @@
 {
+  "source_ref": "AUTH-MAKER-DEMO-001",
   "producer_ref": "MAKER-DEMO",
-  "batch_ref": "WOOD-DEMO"
+  "product_ref": "PROD-DEMO",
+  "batch_ref": "WOOD-DEMO",
+  "spec": "1220x2440x18-E0",
+  "inspection_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "valid_from": "2026-01-01T00:00:00+08:00",
+  "valid_until": "2026-12-31T23:59:59+08:00"
 }
