@@ -1,4 +1,22 @@
 {
-  "producer_ref": "MAKER-DEMO",
-  "batch_ref": "WOOD-DEMO"
+  "authorization": {
+    "credential_id": "CRED-DEMO",
+    "producer_ref": "MAKER-DEMO",
+    "producer_name": "示范木业（虚构）",
+    "product_ref": "SPEC-PLY-18",
+    "spec_name": "18mm 杉木生态板",
+    "batch_ref": "WOOD-DEMO",
+    "inspection_digest": "sha256:demo-inspection-digest",
+    "valid_until": "2026-12-31T23:59:59+08:00",
+    "issued_at": "2026-01-01T00:00:00+08:00"
+  },
+  "offline_apply_event": {
+    "device_id": "DEV-DEMO",
+    "device_event_id": "EVT-DEMO-0001",
+    "event_time": "2026-09-10T08:30:00+08:00",
+    "items": [
+      {"code": "L-DEMO-0001", "product_batch_ref": "PLANK-BATCH-DEMO"}
+    ]
+  },
+  "note": "全部为虚构示例，不含真实企业或个人资料；重传 offline_apply_event 必须逐字节保持相同内容"
 }

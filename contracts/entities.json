@@ -1,14 +1,39 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
   "domain": "林产品公共品牌授权验真",
-  "required_fields": [
-    "producer_ref",
-    "product_ref",
-    "batch_ref",
-    "inspection_digest",
-    "valid_until"
-  ],
   "time_format": "ISO 8601 with offset",
+  "authorization": {
+    "note": "企业现有授权凭证的只读入库快照；只能新增，禁止修改或删除，同内容重复收录幂等",
+    "required_fields": [
+      "credential_id",
+      "producer_ref",
+      "producer_name",
+      "product_ref",
+      "spec_name",
+      "inspection_digest",
+      "valid_until"
+    ],
+    "optional_fields": ["batch_ref", "issued_at", "content_digest"],
+    "immutable": true
+  },
+  "label_lifecycle": {
+    "states": ["printed", "packed", "delivered", "issued", "applied", "frozen", "void"],
+    "events": ["printed", "packed", "delivered", "issued", "applied", "lost", "recovered", "frozen", "voided"],
+    "offline_idempotency_key": ["device_id", "device_event_id"],
+    "rules": [
+      "每个验证编号属于唯一印制批次，不可跨批复用",
+      "领用凭证须在有效期内，且凭证企业与产品规格同标签预印内容一致",
+      "一个码只能贴附到一个产品批次，离线重传不得产生二次贴附",
+      "授权到期冻结未贴附标签，但不改变到期前已贴附售出板材的验真结论",
+      "挂失不删除企业信息，另附 lost 异常标识，并快照最后保管人",
+      "已贴附售出编号不得挂失或作废"
+    ]
+  },
+  "verify": {
+    "anomaly_codes": ["not_applied", "lost", "frozen", "voided"],
+    "always_shown": ["status", "producer_name", "spec_name", "product_ref", "print_batch_id"],
+    "when_applied": ["product_batch_ref", "applied_at", "credential"]
+  },
   "sample": {
     "producer_ref": "MAKER-DEMO",
     "batch_ref": "WOOD-DEMO"
